@@ -132,6 +132,7 @@ model Cart {
   shippingPrice Decimal  @db.Decimal(12, 2)
   taxPrice      Decimal  @db.Decimal(12, 2)
   createdAt     DateTime @default(now()) @db.Timestamp(6)
+  updatedAt     DateTime @updatedAt
   user          User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
@@ -155,6 +156,7 @@ model Order {
   isDeliverd          Boolean             @default(false)
   deliveredAt         DateTime?           @db.Timestamp(6)
   createdAt           DateTime            @default(now()) @db.Timestamp(6)
+  updatedAt           DateTime            @updatedAt
   user                User                @relation(fields: [userId], references: [id], onDelete: Cascade)
   deliveryZone        DeliveryZone?       @relation(fields: [deliveryZoneId], references: [id], onDelete: SetNull)
   orderitems          OrderItem[]
@@ -185,6 +187,7 @@ model Review {
   description         String
   isVerifiedPuruchase Boolean  @default(true)
   createdAt           DateTime @default(now()) @db.Timestamp(6)
+  updatedAt           DateTime @updatedAt
   product             Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
@@ -238,5 +241,6 @@ model StaffNotification {
   message   String
   isRead    Boolean  @default(false)
   createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @updatedAt
   order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
 }
