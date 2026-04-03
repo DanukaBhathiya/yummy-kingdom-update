@@ -15,9 +15,9 @@ const Search = async () => {
 
   return (
     <form action="/search" method="GET">
-      <div className="flex w-full max-w-sm items-center space-x-2">
+      <div className="flex w-full max-w-[460px] items-center gap-2">
         <Select name="category">
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-[130px]">
             <SelectValue placeholder="All" />
           </SelectTrigger>
           <SelectContent>
@@ -31,14 +31,14 @@ const Search = async () => {
             ))}
           </SelectContent>
         </Select>
-         <Input
+        <Input
           name="q"
           type="text"
           placeholder="Search..."
-          className="md:w-[100px] lg:w-[300px]"
+          className="w-[200px]"
         />
-        <Button>
-            <SearchIcon />
+        <Button size="icon" aria-label="Search">
+          <SearchIcon />
         </Button>
       </div>
     </form>
