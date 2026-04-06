@@ -3,19 +3,14 @@ import ProductCarousel from "@/components/shared/product/product-carousel";
 
 const heroSlides = [
   {
-    src: "/images/banner-1.jpg",
+    src: "/images/banner1.png",
     heading: "AN EASTER TREAT\nWORTH SHARING.",
     footnote: "T&C'S APPLY.",
   },
   {
-    src: "/images/banner-2.jpg",
+    src: "/images/banner2.png",
     heading: "HOT DEALS\nALL WEEKEND.",
     footnote: "LIMITED TIME.",
-  },
-  {
-    src: "/images/promo.jpg",
-    heading: "FRESH PIZZA\nFAST DELIVERY.",
-    footnote: "ORDER NOW.",
   },
 ] as { src: string; heading: string; footnote?: string }[];
 

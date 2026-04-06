@@ -9,6 +9,7 @@ import {
   PhoneCall,
   House,
   Pizza,
+  ClipboardList,
 } from "lucide-react";
 import {
   Sheet,
@@ -21,7 +22,7 @@ import UserButton from "./user-button";
 const Menu = () => {
   return (
     <div className="flex items-center">
-      <nav className="hidden md:flex items-center justify-center gap-1 lg:gap-2">
+      <nav className="hidden md:flex items-center justify-end gap-1 lg:gap-2 flex-nowrap whitespace-nowrap">
         <ModeToggle />
         <Button asChild variant="ghost" size="sm" className="h-9 px-2 lg:px-3">
           <Link href="/" className="flex items-center gap-2">
@@ -39,7 +40,7 @@ const Menu = () => {
           asChild
           variant="ghost"
           size="sm"
-          className="hidden h-9 px-2 lg:px-3 2xl:inline-flex"
+          className="h-9 px-2 lg:px-3"
         >
           <Link href="/about-us" className="flex items-center gap-2">
             <Flame className="h-4 w-4" />
@@ -50,11 +51,17 @@ const Menu = () => {
           asChild
           variant="ghost"
           size="sm"
-          className="hidden h-9 px-2 lg:px-3 2xl:inline-flex"
+          className="h-9 px-2 lg:px-3"
         >
           <Link href="/contact-us" className="flex items-center gap-2">
             <PhoneCall className="h-4 w-4" />
             <span>Contact</span>
+          </Link>
+        </Button>
+        <Button asChild variant="ghost" size="sm" className="h-9 px-2 lg:px-3">
+          <Link href="/user/orders" className="flex items-center gap-2">
+            <ClipboardList className="h-4 w-4" />
+            <span>Orders</span>
           </Link>
         </Button>
         <Button asChild variant="ghost" size="sm" className="h-9 px-2 lg:px-3">
@@ -91,6 +98,12 @@ const Menu = () => {
               <Link href="/cart" className="flex items-center gap-2">
                 <ShoppingCart className="h-4 w-4" />
                 <span>Cart</span>
+              </Link>
+            </Button>
+            <Button asChild variant="ghost">
+              <Link href="/user/orders" className="flex items-center gap-2">
+                <ClipboardList className="h-4 w-4" />
+                <span>Orders</span>
               </Link>
             </Button>
             <Button asChild variant="ghost">
