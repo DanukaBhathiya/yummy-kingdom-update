@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Pizza } from "lucide-react";
-import { APP_NAME } from "@/lib/constants";
+import { APP_LOGO, APP_NAME } from "@/lib/constants";
 import CategoryDrawer from "./category-drawer";
 import Menu from "./menu";
 // import Search from "./search";
@@ -13,15 +12,14 @@ const Header = () => {
         <div className="flex shrink-0 items-center">
           <CategoryDrawer />
           <Link href="/" className="flex-start ml-4 gap-4">
-          <Image
-            src="/images/yklogo.png"
-            alt={`${APP_NAME} logo`}
-            height={42}
-            width={82}
-            priority
-            className="animate-float-slow rounded-lg"
-          />
-           
+            <Image
+              src={APP_LOGO}
+              alt={`${APP_NAME} logo`}
+              height={42}
+              width={82}
+              priority
+              className="animate-float-slow rounded-lg"
+            />
           </Link>
         </div>
 
@@ -39,6 +37,5 @@ const Header = () => {
     </header>
   );
 };
-
 
 export default Header;

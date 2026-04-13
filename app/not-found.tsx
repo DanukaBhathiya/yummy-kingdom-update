@@ -1,5 +1,5 @@
 "use client";
-import { APP_NAME } from "@/lib/constants";
+import { APP_LOGO, APP_NAME } from "@/lib/constants";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 
@@ -7,9 +7,9 @@ const NotFounndPage = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
       <Image
-        src="/images/logo.svg"
-        width={48}
-        height={48}
+        src={APP_LOGO}
+        width={96}
+        height={50}
         alt={`${APP_NAME} logo`}
         priority={true}
       />

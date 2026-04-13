@@ -1,4 +1,4 @@
-import { APP_NAME } from "@/lib/constants";
+import { APP_LOGO, APP_NAME } from "@/lib/constants";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -20,19 +20,17 @@ export default async function AdminLayout({
 
   return (
     <div className="flex min-h-screen flex-col bg-muted/20">
-      <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
-        <div className="container mx-auto px-4">
-          <div className="flex h-16 items-center gap-3">
-            <Link
-              href="/admin/overview"
-              className="flex items-center gap-2 shrink-0"
-            >
+      <header className="sticky top-0 z-50 w-full border-b bg-background/85 backdrop-blur-xl supports-[backdrop-filter]:bg-background/70">
+        <div className="wrapper">
+          <div className="flex items-center gap-3">
+            <div className="flex shrink-0 items-center">
+              <Link href="/admin/overview" className="flex-start ml-4 gap-4">
               <Image
-                src="/images/logo.svg"
-                height={40}
-                width={40}
+                src={APP_LOGO}
+                height={42}
+                width={82}
                 alt={APP_NAME}
-                className="rounded-md"
+                className="animate-float-slow rounded-lg"
               />
               <div className="hidden sm:block leading-tight">
                 <p className="text-xs text-muted-foreground">Admin Console</p>
@@ -41,7 +39,8 @@ export default async function AdminLayout({
                   {APP_NAME}
                 </p>
               </div>
-            </Link>
+              </Link>
+            </div>
 
             <MainNav
               className="hidden xl:flex flex-1 min-w-0 mx-4"
@@ -59,7 +58,7 @@ export default async function AdminLayout({
               <UserButton />
             </div>
           </div>
-          <div className="pb-3 xl:hidden">
+          <div className="xl:hidden">
             <MainNav pendingOrdersCount={pendingOrdersCount} />
           </div>
         </div>

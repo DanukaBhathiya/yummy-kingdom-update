@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Calendar, MessageCircleHeart, User } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -15,8 +16,10 @@ import type { ShopReviewWithUser } from "@/lib/actions/shop-review.actions";
 import ShopReviewForm from "./shop-review-form";
 
 const ShopReviewSection = ({ userId }: { userId?: string | null }) => {
+  const pathname = usePathname();
   const [reviews, setReviews] = useState<ShopReviewWithUser[]>([]);
   const [summary, setSummary] = useState({ averageRating: 0, totalReviews: 0 });
+  const callbackUrl = pathname ? encodeURIComponent(pathname) : encodeURIComponent("/");
 
   const loadReviews = async () => {
     const [reviewRes, summaryRes] = await Promise.all([
@@ -60,7 +63,10 @@ const ShopReviewSection = ({ userId }: { userId?: string | null }) => {
       ) : (
         <p className="text-sm text-muted-foreground">
           Please
-          <Link href="/sign-in?callbackUrl=/about-us" className="px-2 text-blue-700 hover:underline">
+          <Link
+            href={`/sign-in?callbackUrl=${callbackUrl}`}
+            className="px-2 text-blue-700 hover:underline"
+          >
             sign in
           </Link>
           to rate and review the shop.

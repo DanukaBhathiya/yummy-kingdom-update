@@ -1,4 +1,4 @@
-import { APP_NAME } from "@/lib/constants";
+import { APP_LOGO, APP_NAME } from "@/lib/constants";
 import Image from "next/image";
 import Link from "next/link";
 import Menu from "@/components/shared/header/menu";
@@ -17,9 +17,9 @@ export default function AdminLayout({
           <div className="flex items-center h-16 px-4">
             <Link href="/" className="w-22">
               <Image
-                src="/images/logo.svg"
-                height={48}
-                width={48}
+                src={APP_LOGO}
+                height={42}
+                width={82}
                 alt={APP_NAME}
               />
             </Link>

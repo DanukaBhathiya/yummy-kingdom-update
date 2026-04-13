@@ -11,6 +11,7 @@ import {
   Pizza,
   ClipboardList,
   Tag,
+  MessageCircleHeart,
 } from "lucide-react";
 import {
   Sheet,
@@ -41,6 +42,12 @@ const Menu = () => {
           <Link href="/offers" className="flex items-center gap-2">
             <Tag className="h-4 w-4" />
             <span>Offers</span>
+          </Link>
+        </Button>
+        <Button asChild variant="ghost" size="sm" className="h-9 px-2 lg:px-3">
+          <Link href="/reviews" className="flex items-center gap-2">
+            <MessageCircleHeart className="h-4 w-4" />
+            <span>Reviews</span>
           </Link>
         </Button>
         <Button
@@ -105,6 +112,12 @@ const Menu = () => {
               <Link href="/offers" className="flex items-center gap-2">
                 <Tag className="h-4 w-4" />
                 <span>Offers</span>
+              </Link>
+            </Button>
+            <Button asChild variant="ghost">
+              <Link href="/reviews" className="flex items-center gap-2">
+                <MessageCircleHeart className="h-4 w-4" />
+                <span>Reviews</span>
               </Link>
             </Button>
             <Button asChild variant="ghost">

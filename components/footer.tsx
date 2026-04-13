@@ -16,10 +16,13 @@ const Footer = () => {
       <div className="wrapper py-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-wrap items-center gap-4 text-sm">
           <Link href="/about-us" className="hover:underline">
-            About Us ✨
+            About Us
           </Link>
           <Link href="/contact-us" className="hover:underline">
-            Contact Us 📍
+            Contact Us
+          </Link>
+          <Link href="/reviews" className="hover:underline">
+            Customer Reviews
           </Link>
           <Link
             href={`https://wa.me/94${SHOP_WHATSAPP.replace(/\s+/g, "").slice(1)}`}
@@ -38,7 +41,7 @@ const Footer = () => {
         </div>
         <div className="text-sm text-muted-foreground text-right">
           <div>
-            {currentYear} {APP_NAME}. All Rights Reserved 🍕
+            {currentYear} {APP_NAME}. All Rights Reserved
           </div>
           <div className="inline-flex items-center gap-1">
             <PhoneCall className="h-3.5 w-3.5" /> {SHOP_CONTACT} | {SHOP_EMAIL}
