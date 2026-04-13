@@ -9,6 +9,7 @@ import { PAGE_SIZE } from "@/lib/constants";
 import { Value } from "@radix-ui/react-select";
 import Link from "next/link";
 import { title } from "process";
+import { ShoppingBag, Tag, Truck, UtensilsCrossed } from "lucide-react";
 
 const prices = [
   {
@@ -36,6 +37,45 @@ const prices = [
 const ratings = [4, 3, 2, 1];
 
 const sortOrders = ["newest", "lowest", "highest", "rating"];
+
+const orderModeUi = {
+  deliver: {
+    label: "Delivery",
+    icon: Truck,
+  },
+  collect: {
+    label: "Takeaway",
+    icon: ShoppingBag,
+  },
+  dinein: {
+    label: "Dine-in",
+    icon: UtensilsCrossed,
+  },
+} as const;
+
+const quickOrderTabs = [
+  {
+    label: "Deals",
+    href: "/offers",
+    icon: Tag,
+  },
+  {
+    label: "Pizza",
+    href: "/search?q=pizza",
+  },
+  {
+    label: "Sides",
+    href: "/search?category=Sides",
+  },
+  {
+    label: "Drinks",
+    href: "/search?category=Beverages",
+  },
+  {
+    label: "Desserts",
+    href: "/search?category=Desserts",
+  },
+] as const;
 
 export async function generateMetadata(props: {
   searchParams: Promise<{
@@ -82,6 +122,8 @@ const SearchPage = async (props: {
     rating?: string;
     sort?: string;
     page?: string;
+    mode?: "deliver" | "collect" | "dinein";
+    loc?: string;
   }>;
 }) => {
   const {
@@ -91,7 +133,14 @@ const SearchPage = async (props: {
     rating = "all",
     sort = "newest",
     page = "1",
+    mode = "deliver",
+    loc = "",
   } = await props.searchParams;
+
+  const safeMode = ["deliver", "collect", "dinein"].includes(mode)
+    ? (mode as "deliver" | "collect" | "dinein")
+    : "deliver";
+  const modeMeta = orderModeUi[safeMode];
 
   //Construct filter URL
   const getFilterUrl = ({
@@ -100,20 +149,26 @@ const SearchPage = async (props: {
     p,
     r,
     pg,
+    m,
+    l,
   }: {
     c?: string;
     s?: string;
     p?: string;
     r?: string;
     pg?: string;
+    m?: "deliver" | "collect" | "dinein";
+    l?: string;
   }) => {
-    const params = { q, category, price, rating, sort, page };
+    const params = { q, category, price, rating, sort, page, mode: safeMode, loc };
 
     if (c) params.category = c;
     if (p) params.price = p;
     if (s) params.sort = s;
     if (r) params.rating = r;
     if (pg) params.page = pg;
+    if (m) params.mode = m;
+    if (typeof l !== "undefined") params.loc = l;
 
     return `/search?${new URLSearchParams(params).toString()}`;
   };
@@ -130,7 +185,44 @@ const SearchPage = async (props: {
   const categories = await getAllCategories();
 
   return (
-    <div className="grid md:grid-cols-5 md:gap-5">
+    <div className="space-y-5">
+      <section className="rounded-2xl border bg-white/90 p-4 md:p-5">
+        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+          <div>
+            <div className="inline-flex items-center gap-2 text-sm text-muted-foreground">
+              <modeMeta.icon className="h-4 w-4" />
+              {modeMeta.label} Mode
+            </div>
+            <h1 className="mt-1 text-2xl md:text-3xl font-black tracking-tight">
+              Order Now
+            </h1>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {loc ? `Location: ${loc}` : "Set your location from the home page for local deals."}
+            </p>
+          </div>
+          <Button asChild>
+            <Link href="/">Change Mode or Location</Link>
+          </Button>
+        </div>
+        <div className="mt-4 flex flex-wrap gap-2">
+          {quickOrderTabs.map((tab) => (
+            <Button key={tab.label} asChild variant="outline" size="sm" className="rounded-full">
+              <Link href={`${tab.href}${tab.href.includes("?") ? "&" : "?"}mode=${safeMode}${loc ? `&loc=${encodeURIComponent(loc)}` : ""}`}>
+                {tab.icon ? (
+                  <span className="inline-flex items-center gap-1.5">
+                    <tab.icon className="h-4 w-4" />
+                    {tab.label}
+                  </span>
+                ) : (
+                  tab.label
+                )}
+              </Link>
+            </Button>
+          ))}
+        </div>
+      </section>
+
+      <div className="grid md:grid-cols-5 md:gap-5">
       <div className="filter-links">
         {/*Category Links */}
         <div className="text-xl mb-2 mt-3">Pizza Category</div>
@@ -246,6 +338,7 @@ const SearchPage = async (props: {
             <ProductCard key={product.id} product={product} />
           ))}
         </div>
+      </div>
       </div>
     </div>
   );

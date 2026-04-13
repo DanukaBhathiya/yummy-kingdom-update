@@ -29,6 +29,7 @@ type ProductCarouselProps =
       className?: string;
       fullBleed?: boolean;
       autoplayDelay?: number;
+      showControls?: boolean;
     }
   | {
       variant: "hero";
@@ -36,12 +37,14 @@ type ProductCarouselProps =
       className?: string;
       fullBleed?: boolean;
       autoplayDelay?: number;
+      showControls?: boolean;
     };
 
 const ProductCarousel = (props: ProductCarouselProps) => {
   const isHero = props.variant === "hero";
   const autoplayDelay = props.autoplayDelay ?? (isHero ? 3500 : 2000);
   const fullBleed = props.fullBleed ?? !isHero;
+  const showControls = props.showControls ?? true;
 
   return (
     <Carousel
@@ -71,7 +74,7 @@ const ProductCarousel = (props: ProductCarouselProps) => {
                 {slide.href ? (
                   <Link href={slide.href}>
                     <motion.div
-                      className="relative min-h-[260px] md:min-h-[360px]"
+                      className="relative min-h-[calc(100vh-72px)]"
                       initial={{ opacity: 0, scale: 1.02 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ duration: 0.55, ease: "easeOut" }}
@@ -104,7 +107,7 @@ const ProductCarousel = (props: ProductCarouselProps) => {
                   </Link>
                 ) : (
                   <motion.div
-                    className="relative min-h-[260px] md:min-h-[360px]"
+                    className="relative min-h-[calc(100vh-72px)]"
                     initial={{ opacity: 0, scale: 1.02 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.55, ease: "easeOut" }}
@@ -161,8 +164,12 @@ const ProductCarousel = (props: ProductCarouselProps) => {
               </CarouselItem>
             ))}
       </CarouselContent>
-      <CarouselPrevious className="left-4 border-white/30 bg-white/10 text-white hover:bg-white/20 hover:text-white" />
-      <CarouselNext className="right-4 border-white/30 bg-white/10 text-white hover:bg-white/20 hover:text-white" />
+      {showControls && (
+        <>
+          <CarouselPrevious className="left-4 border-white/30 bg-white/10 text-white hover:bg-white/20 hover:text-white" />
+          <CarouselNext className="right-4 border-white/30 bg-white/10 text-white hover:bg-white/20 hover:text-white" />
+        </>
+      )}
     </Carousel>
   );
 };

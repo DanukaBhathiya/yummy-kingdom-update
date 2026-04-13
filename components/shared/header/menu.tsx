@@ -8,6 +8,7 @@ import {
   Flame,
   PhoneCall,
   House,
+  Truck,
   Pizza,
   ClipboardList,
   Tag,
@@ -26,6 +27,12 @@ const Menu = () => {
     <div className="flex items-center">
       <nav className="hidden md:flex items-center justify-end gap-1 lg:gap-2 flex-nowrap whitespace-nowrap">
         <ModeToggle />
+        <Button asChild size="sm" className="h-9 px-3 bg-[#e31837] hover:bg-[#c7122f]">
+          <Link href="/search?mode=deliver" className="flex items-center gap-2">
+            <Truck className="h-4 w-4" />
+            <span>Order Now</span>
+          </Link>
+        </Button>
         <Button asChild variant="ghost" size="sm" className="h-9 px-2 lg:px-3">
           <Link href="/" className="flex items-center gap-2">
             <House className="h-4 w-4" />
@@ -96,6 +103,12 @@ const Menu = () => {
           <SheetContent className="flex flex-col items-start gap-2">
             <SheetTitle>Menu</SheetTitle>
             <ModeToggle />
+            <Button asChild>
+              <Link href="/search?mode=deliver" className="flex items-center gap-2">
+                <Truck className="h-4 w-4" />
+                <span>Order Now</span>
+              </Link>
+            </Button>
             <Button asChild variant="ghost">
               <Link href="/" className="flex items-center gap-2">
                 <House className="h-4 w-4" />

@@ -33,9 +33,7 @@ const HomePromoBanner = async () => {
   const ctaHref = featured?.ctaUrl || "/offers";
   const ctaLabel = featured?.ctaLabel || "View All Offers";
   const featuredTitle = featured?.title || "Fresh Deals Every Week";
-  const featuredDescription =
-    featured?.description ||
-    "Browse the latest restaurant offers and brand advertisements in one place.";
+  const featuredDescription = featured?.description || undefined;
 
   return (
     <HomePromoBannerClient

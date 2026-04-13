@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Megaphone, Sparkles, Tag } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import ProductCarousel from "@/components/shared/product/product-carousel";
+import StartOrder from "./start-order";
 
 type HeroSlide = {
   src: string;
@@ -41,7 +42,7 @@ const HomePromoBannerClient = ({
 }: {
   featuredTitle: string;
   featuredSubtitle?: string;
-  featuredDescription: string;
+  featuredDescription?: string;
   ctaHref: string;
   ctaLabel: string;
   slides: HeroSlide[];
@@ -53,88 +54,58 @@ const HomePromoBannerClient = ({
       initial="hidden"
       animate="show"
     >
-      <div className="grid grid-cols-1 overflow-hidden rounded-none md:grid-cols-[440px_minmax(0,1fr)] lg:grid-cols-[520px_minmax(0,1fr)]">
-        <motion.div
-          variants={itemVariants}
-          className="relative overflow-hidden bg-[#e31837] px-8 py-10 text-white md:px-12 md:py-14"
-        >
-          <motion.div
-            aria-hidden
-            className="pointer-events-none absolute -right-12 -top-12 h-52 w-52 rounded-full bg-white/10"
-            animate={{ scale: [1, 1.08, 1], opacity: [0.35, 0.6, 0.35] }}
-            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-          />
-          <motion.div
-            aria-hidden
-            className="pointer-events-none absolute -left-12 bottom-8 h-36 w-36 rounded-full bg-orange-300/20"
-            animate={{ y: [0, -10, 0], opacity: [0.45, 0.7, 0.45] }}
-            transition={{ duration: 4.8, repeat: Infinity, ease: "easeInOut" }}
-          />
-
-          <div className="relative z-10 flex items-start gap-4">
-            <motion.div variants={itemVariants} className="mt-1 hidden sm:block">
-              <Tag className="h-14 w-14" />
-            </motion.div>
-            <div>
-              <motion.div
-                variants={itemVariants}
-                className="inline-flex items-center gap-2 rounded-full border border-white/30 px-3 py-1 text-xs font-bold uppercase tracking-wider"
-              >
-                <Megaphone className="h-3.5 w-3.5" />
-                Featured Offer
-              </motion.div>
-
-              <motion.h2
-                variants={itemVariants}
-                className="mt-5 whitespace-pre-line text-3xl font-extrabold uppercase leading-[0.95] tracking-tight md:text-4xl"
-              >
-                {featuredTitle}
-              </motion.h2>
-
-              {featuredSubtitle && (
-                <motion.p
-                  variants={itemVariants}
-                  className="mt-3 text-sm font-semibold uppercase tracking-wide md:text-base"
-                >
-                  {featuredSubtitle}
-                </motion.p>
-              )}
-
-              <motion.p
-                variants={itemVariants}
-                className="mt-5 max-w-[34ch] text-sm text-white/90 md:text-base"
-              >
-                {featuredDescription}
-              </motion.p>
-
-              <motion.div variants={itemVariants} className="mt-7 inline-block">
-                <motion.div
-                  whileHover={{ y: -2, scale: 1.03 }}
-                  whileTap={{ scale: 0.98 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <Link
-                    href={ctaHref}
-                    className="inline-flex items-center gap-1.5 rounded-md bg-white px-4 py-2 font-bold text-[#e31837] transition-colors hover:bg-white/90"
-                  >
-                    {ctaLabel}
-                    <Sparkles className="h-4 w-4" />
-                  </Link>
-                </motion.div>
-              </motion.div>
-            </div>
-          </div>
-        </motion.div>
-
-        <motion.div variants={itemVariants}>
+      <div className="relative min-h-[calc(100vh-72px)] overflow-hidden">
+        <motion.div variants={itemVariants} className="absolute inset-0">
           <ProductCarousel
             variant="hero"
             slides={slides}
             fullBleed={false}
             className="h-full"
             autoplayDelay={3500}
+            showControls={false}
           />
         </motion.div>
+
+        <div className="pointer-events-none absolute inset-0 bg-black/65" />
+
+        <div className="absolute inset-x-0 top-0 z-20">
+          <div className="wrapper pt-7">
+            <div className="max-w-xl text-white">
+              <h2 className="whitespace-pre-line text-3xl font-extrabold uppercase leading-[0.95] tracking-tight md:text-5xl">
+                {featuredTitle}
+              </h2>
+              {featuredSubtitle && (
+                <p className="mt-2 text-xs font-semibold uppercase tracking-[0.2em] text-white/85 md:text-sm">
+                  {featuredSubtitle}
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <motion.div
+          variants={itemVariants}
+          className="absolute inset-x-0 top-1/2 z-20 -translate-y-1/2 px-4"
+        >
+          <div className="mx-auto w-full max-w-2xl">
+            <StartOrder variant="overlay" />
+          </div>
+        </motion.div>
+
+        <div className="absolute inset-x-0 bottom-6 z-20 hidden md:block">
+          <div className="wrapper flex items-end justify-between gap-4 text-white">
+            {featuredDescription && (
+              <p className="max-w-xl text-sm text-white/85">{featuredDescription}</p>
+            )}
+            <Link
+              href={ctaHref}
+              className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-white/35 bg-white/15 px-4 py-2 text-sm font-semibold text-white backdrop-blur hover:bg-white/20"
+            >
+              {ctaLabel}
+              <Sparkles className="h-4 w-4" />
+            </Link>
+          </div>
+        </div>
       </div>
     </motion.section>
   );
