@@ -8,7 +8,6 @@ import {
 import HomePromoBanner from "@/components/shared/home/home-promo-banner";
 import StartOrder from "@/components/shared/home/start-order";
 import HomeOffersGrid from "@/components/shared/home/home-offers-grid";
-import ReviewRedirectPopup from "@/components/shared/home/review-redirect-popup";
 
 const Homepage = async () => {
   const latestProducts = await getLatestProduct();
@@ -16,7 +15,6 @@ const Homepage = async () => {
 
   return (
     <>
-      <ReviewRedirectPopup />
       <div className="relative -mt-5 left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-screen">
         <HomePromoBanner />
       </div>
