@@ -38,6 +38,8 @@ type ProductCarouselProps =
       fullBleed?: boolean;
       autoplayDelay?: number;
       showControls?: boolean;
+      hideHeroText?: boolean;
+      heroHeightClass?: string;
     };
 
 const ProductCarousel = (props: ProductCarouselProps) => {
@@ -45,6 +47,11 @@ const ProductCarousel = (props: ProductCarouselProps) => {
   const autoplayDelay = props.autoplayDelay ?? (isHero ? 3500 : 2000);
   const fullBleed = props.fullBleed ?? !isHero;
   const showControls = props.showControls ?? true;
+  const heroHeightClass =
+    isHero && props.heroHeightClass
+      ? props.heroHeightClass
+      : "min-h-[calc(100vh-72px)]";
+  const hideHeroText = isHero ? props.hideHeroText ?? false : false;
 
   return (
     <Carousel
@@ -74,7 +81,7 @@ const ProductCarousel = (props: ProductCarouselProps) => {
                 {slide.href ? (
                   <Link href={slide.href}>
                     <motion.div
-                      className="relative min-h-[calc(100vh-72px)]"
+                      className={cn("relative", heroHeightClass)}
                       initial={{ opacity: 0, scale: 1.02 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ duration: 0.55, ease: "easeOut" }}
@@ -87,27 +94,31 @@ const ProductCarousel = (props: ProductCarouselProps) => {
                         className="object-cover transition-transform duration-1000 hover:scale-[1.04]"
                         sizes="(max-width: 768px) 100vw, 70vw"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent" />
-                      <motion.div
-                        className="absolute bottom-8 left-8 right-8"
-                        initial={{ opacity: 0, y: 18 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5, delay: 0.15, ease: "easeOut" }}
-                      >
-                        <div className="max-w-xl whitespace-pre-line text-white uppercase font-black tracking-tight leading-[0.95] text-4xl md:text-5xl">
-                          {slide.heading}
-                        </div>
-                        {slide.footnote && (
-                          <div className="mt-3 text-white/80 text-xs font-semibold uppercase tracking-widest">
-                            {slide.footnote}
-                          </div>
-                        )}
-                      </motion.div>
+                      {!hideHeroText && (
+                        <>
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent" />
+                          <motion.div
+                            className="absolute bottom-8 left-8 right-8"
+                            initial={{ opacity: 0, y: 18 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.5, delay: 0.15, ease: "easeOut" }}
+                          >
+                            <div className="max-w-xl whitespace-pre-line text-white uppercase font-black tracking-tight leading-[0.95] text-4xl md:text-5xl">
+                              {slide.heading}
+                            </div>
+                            {slide.footnote && (
+                              <div className="mt-3 text-white/80 text-xs font-semibold uppercase tracking-widest">
+                                {slide.footnote}
+                              </div>
+                            )}
+                          </motion.div>
+                        </>
+                      )}
                     </motion.div>
                   </Link>
                 ) : (
                   <motion.div
-                    className="relative min-h-[calc(100vh-72px)]"
+                    className={cn("relative", heroHeightClass)}
                     initial={{ opacity: 0, scale: 1.02 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.55, ease: "easeOut" }}
@@ -120,22 +131,26 @@ const ProductCarousel = (props: ProductCarouselProps) => {
                       className="object-cover transition-transform duration-1000 hover:scale-[1.04]"
                       sizes="(max-width: 768px) 100vw, 70vw"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent" />
-                    <motion.div
-                      className="absolute bottom-8 left-8 right-8"
-                      initial={{ opacity: 0, y: 18 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.5, delay: 0.15, ease: "easeOut" }}
-                    >
-                      <div className="max-w-xl whitespace-pre-line text-white uppercase font-black tracking-tight leading-[0.95] text-4xl md:text-5xl">
-                        {slide.heading}
-                      </div>
-                      {slide.footnote && (
-                        <div className="mt-3 text-white/80 text-xs font-semibold uppercase tracking-widest">
-                          {slide.footnote}
-                        </div>
-                      )}
-                    </motion.div>
+                    {!hideHeroText && (
+                      <>
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent" />
+                        <motion.div
+                          className="absolute bottom-8 left-8 right-8"
+                          initial={{ opacity: 0, y: 18 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.5, delay: 0.15, ease: "easeOut" }}
+                        >
+                          <div className="max-w-xl whitespace-pre-line text-white uppercase font-black tracking-tight leading-[0.95] text-4xl md:text-5xl">
+                            {slide.heading}
+                          </div>
+                          {slide.footnote && (
+                            <div className="mt-3 text-white/80 text-xs font-semibold uppercase tracking-widest">
+                              {slide.footnote}
+                            </div>
+                          )}
+                        </motion.div>
+                      </>
+                    )}
                   </motion.div>
                 )}
               </CarouselItem>

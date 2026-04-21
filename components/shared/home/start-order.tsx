@@ -8,16 +8,10 @@ import {
   Truck,
   UtensilsCrossed,
   ArrowRight,
-  Tag,
-  Pizza,
-  Sandwich,
-  GlassWater,
-  CakeSlice,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
 import { APP_NAME, SHOP_CITY, SHOP_GOOGLE_MAPS_URL } from "@/lib/constants";
 
@@ -43,8 +37,8 @@ const modeUi = {
   deliver: {
     tabLabel: "Deliver",
     modeLabel: "DELIVER",
-    label: "Delivery address or postcode",
-    helper: "Find your nearest Hut and local delivery deals",
+    label: "Delivery postcode",
+    helper: "Enter your postcode to see local delivery deals",
     icon: Truck,
   },
   collect: {
@@ -62,14 +56,6 @@ const modeUi = {
     icon: UtensilsCrossed,
   },
 } as const;
-
-const quickLinks = [
-  { label: "Deals", href: "/offers", icon: Tag },
-  { label: "Pizza", href: "/search?q=pizza", icon: Pizza },
-  { label: "Sides", href: "/search?category=Sides", icon: Sandwich },
-  { label: "Drinks", href: "/search?category=Beverages", icon: GlassWater },
-  { label: "Desserts", href: "/search?category=Desserts", icon: CakeSlice },
-] as const;
 
 const StartOrder = ({
   variant = "section",
@@ -91,12 +77,29 @@ const StartOrder = ({
   const tabColumnsClass = modeOptions.length === 2 ? "grid-cols-2" : "grid-cols-3";
 
   const onStartOrder = () => {
+    const trimmedLocation = location.trim();
     const params = new URLSearchParams();
     params.set("mode", mode);
-    if (location.trim()) {
-      params.set("loc", location.trim());
+
+    if (!trimmedLocation) {
+      toast({
+        title: mode === "deliver" ? "Postcode required" : "Location required",
+        description:
+          mode === "deliver"
+            ? "Enter your delivery postcode to view local deals."
+            : "Enter your location to view local deals.",
+        variant: "destructive",
+      });
+      return;
     }
-    router.push(`/search?${params.toString()}`);
+
+    if (mode === "deliver") {
+      params.set("postcode", trimmedLocation);
+    } else {
+      params.set("loc", trimmedLocation);
+    }
+
+    router.push(`/offers?${params.toString()}`);
   };
 
   const getMapUrl = (latitude?: number, longitude?: number) =>
@@ -227,13 +230,19 @@ const StartOrder = ({
   const orderCard = (
     <div
       className={cn(
-        "w-full overflow-hidden rounded-xl border bg-white",
+        "w-full overflow-hidden border bg-white",
         variant === "overlay"
-          ? "max-w-2xl shadow-[0_20px_60px_rgba(0,0,0,0.5)]"
-          : "max-w-5xl shadow-sm"
+          ? "max-w-2xl rounded-xl shadow-[0_20px_60px_rgba(0,0,0,0.5)]"
+          : "mx-auto max-w-3xl border-zinc-200 shadow-[0_10px_25px_rgba(0,0,0,0.04)]"
       )}
     >
-      <div className={cn("grid border-b bg-muted/30", tabColumnsClass)}>
+      <div
+        className={cn(
+          "grid border-b",
+          variant === "overlay" ? "bg-muted/30" : "bg-[#f3f1ee]",
+          tabColumnsClass
+        )}
+      >
         {modeOptions.map((value) => {
           const Icon = modeUi[value].icon;
           return (
@@ -242,10 +251,11 @@ const StartOrder = ({
               type="button"
               onClick={() => setMode(value)}
               className={cn(
-                "flex items-center justify-center gap-2 px-3 py-3 text-sm font-semibold capitalize border-r last:border-r-0",
+                "flex items-center justify-center gap-2 border-r px-3 py-4 text-sm font-semibold capitalize last:border-r-0",
                 mode === value
                   ? "bg-white text-[#e31837]"
-                  : "text-muted-foreground hover:bg-white/70"
+                  : "text-muted-foreground hover:bg-white/70",
+                variant === "section" && "text-base md:text-lg"
               )}
             >
               <Icon className="h-4 w-4" />
@@ -255,13 +265,13 @@ const StartOrder = ({
         })}
       </div>
 
-      <div className="p-4 md:p-6">
+      <div className={cn(variant === "overlay" ? "p-4 md:p-6" : "p-4 md:p-5")}>
         <div
           className={cn(
             "gap-4",
             variant === "overlay"
               ? "space-y-3"
-              : "grid md:grid-cols-[1fr_180px] md:items-start"
+              : "grid md:grid-cols-[1fr_210px] md:items-start"
           )}
         >
           <div className="space-y-2">
@@ -276,14 +286,14 @@ const StartOrder = ({
               value={location}
               onChange={(e) => setLocation(e.target.value)}
               autoComplete="street-address"
-              className="h-12"
+              className="h-12 rounded-none border-zinc-200"
             />
           </div>
           <Button
-            className="h-12 bg-[#e31837] hover:bg-[#c7122f]"
+            className="h-12 rounded-none bg-[#e31837] text-base font-bold hover:bg-[#c7122f]"
             onClick={onStartOrder}
           >
-            Order Now <ArrowRight className="h-4 w-4" />
+            View Deals <ArrowRight className="h-4 w-4" />
           </Button>
         </div>
 
@@ -305,29 +315,13 @@ const StartOrder = ({
   }
 
   return (
-    <section className="w-full bg-gradient-to-b from-[#f5f5f5] to-[#f0ece8]">
-      <div className="py-8 md:py-10">
-        <h2 className="text-center text-[#e31837] font-black tracking-tight text-3xl md:text-5xl">
+    <section className="w-full bg-[#f7f4ef]">
+      <div className="mx-auto max-w-6xl px-5 py-10 md:px-10 md:py-14">
+        <h2 className="text-center text-[#e31837] font-black tracking-tight text-4xl leading-none md:text-6xl lg:text-7xl">
           START YOUR ORDER
         </h2>
 
-        <div className="mx-auto mt-6 w-full max-w-5xl">{orderCard}</div>
-
-        <div className="mx-auto mt-4 w-full max-w-5xl rounded-xl border bg-white p-3 md:p-4">
-          <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground px-1">
-            Order Now
-          </div>
-          <div className="mt-2 flex flex-wrap gap-2">
-            {quickLinks.map((item) => (
-              <Button key={item.label} asChild variant="ghost" className="rounded-full">
-                <Link href={item.href} className="inline-flex items-center gap-2">
-                  <item.icon className="h-4 w-4" />
-                  {item.label}
-                </Link>
-              </Button>
-            ))}
-          </div>
-        </div>
+        <div className="mt-6">{orderCard}</div>
       </div>
     </section>
   );
