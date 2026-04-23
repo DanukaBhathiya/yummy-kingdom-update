@@ -1,15 +1,20 @@
 import ProductCard from "@/components/shared/product/product-card";
 import { Button } from "@/components/ui/button";
-import { CardContent } from "@/components/ui/card";
 import {
   getAllProducts,
   getAllCategories,
 } from "@/lib/actions/product.actions";
-import { PAGE_SIZE } from "@/lib/constants";
-import { Value } from "@radix-ui/react-select";
 import Link from "next/link";
-import { title } from "process";
-import { ShoppingBag, Tag, Truck, UtensilsCrossed } from "lucide-react";
+import {
+  CakeSlice,
+  GlassWater,
+  Pizza,
+  Sandwich,
+  ShoppingBag,
+  Tag,
+  Truck,
+  UtensilsCrossed,
+} from "lucide-react";
 
 const prices = [
   {
@@ -62,18 +67,22 @@ const quickOrderTabs = [
   {
     label: "Pizza",
     href: "/search?q=pizza",
+    icon: Pizza,
   },
   {
     label: "Sides",
     href: "/search?category=Sides",
+    icon: Sandwich,
   },
   {
     label: "Drinks",
     href: "/search?category=Beverages",
+    icon: GlassWater,
   },
   {
     label: "Desserts",
     href: "/search?category=Desserts",
+    icon: CakeSlice,
   },
 ] as const;
 

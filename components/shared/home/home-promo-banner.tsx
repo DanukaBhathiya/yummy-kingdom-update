@@ -19,7 +19,6 @@ const fallbackSlides = [
 const HomePromoBanner = async () => {
   const promotions = await getActivePromotions({ placement: "HOME", limit: 8 });
 
-  const featured = promotions.find((item) => item.type === "OFFER") ?? promotions[0];
   const promoSlides = promotions
     .filter((item) => item.imageUrl)
     .map((item) => ({
@@ -30,21 +29,8 @@ const HomePromoBanner = async () => {
     }));
 
   const slides = promoSlides.length > 0 ? promoSlides : fallbackSlides;
-  const ctaHref = featured?.ctaUrl || "/offers";
-  const ctaLabel = featured?.ctaLabel || "View All Offers";
-  const featuredTitle = featured?.title || "Fresh Deals Every Week";
-  const featuredDescription = featured?.description || undefined;
 
-  return (
-    <HomePromoBannerClient
-      featuredTitle={featuredTitle}
-      featuredSubtitle={featured?.subtitle || undefined}
-      featuredDescription={featuredDescription}
-      ctaHref={ctaHref}
-      ctaLabel={ctaLabel}
-      slides={slides}
-    />
-  );
+  return <HomePromoBannerClient slides={slides} />;
 };
 
 export default HomePromoBanner;

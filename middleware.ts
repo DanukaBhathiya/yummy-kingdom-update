@@ -1,4 +1,16 @@
 import NextAuth from "next-auth";
+import { NextResponse } from "next/server";
 import { authConfig } from "./auth.config";
 
-export const { auth: middleware } = NextAuth(authConfig);
+const { auth } = NextAuth(authConfig);
+
+export default auth((req) => {
+  const requestHeaders = new Headers(req.headers);
+  requestHeaders.set("x-pathname", req.nextUrl.pathname);
+
+  return NextResponse.next({
+    request: {
+      headers: requestHeaders,
+    },
+  });
+});
