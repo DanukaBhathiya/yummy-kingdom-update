@@ -1,5 +1,5 @@
 export const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME || "Yummy Kingdom";
-export const APP_LOGO = "/images/yklogo.png";
+export const APP_LOGO = "/images/logo.png";
 export const APP_DESCRIPTION =
   process.env.NEXT_PUBLIC_APP_DESCRIPTION ||
   "We deliver a wide range of Delicious Italian food with the Hidden secrets in the kingdom.";
