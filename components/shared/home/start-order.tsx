@@ -239,14 +239,14 @@ const StartOrder = ({
       className={cn(
         "w-full overflow-hidden border bg-white",
         variant === "overlay"
-          ? "max-w-2xl rounded-xl shadow-[0_20px_60px_rgba(0,0,0,0.5)]"
+          ? "max-w-[760px] border-[#d4d4d4] shadow-[0_20px_48px_rgba(0,0,0,0.32)]"
           : "mx-auto max-w-3xl border-zinc-200 shadow-[0_10px_25px_rgba(0,0,0,0.04)]"
       )}
     >
       <div
         className={cn(
           "grid border-b",
-          variant === "overlay" ? "bg-muted/30" : "bg-[#f3f1ee]",
+          variant === "overlay" ? "bg-[#ececec]" : "bg-[#f3f1ee]",
           tabColumnsClass
         )}
       >
@@ -262,7 +262,8 @@ const StartOrder = ({
                 mode === value
                   ? "bg-white text-[#e31837]"
                   : "text-muted-foreground hover:bg-white/70",
-                variant === "section" && "text-base md:text-lg"
+                variant === "section" && "text-base md:text-lg",
+                variant === "overlay" && "py-5 text-lg"
               )}
             >
               <Icon className="h-4 w-4" />
@@ -272,41 +273,68 @@ const StartOrder = ({
         })}
       </div>
 
-      <div className={cn(variant === "overlay" ? "p-4 md:p-6" : "p-4 md:p-5")}>
-        <div
-          className={cn(
-            "gap-4",
-            variant === "overlay"
-              ? "space-y-3"
-              : "grid md:grid-cols-[1fr_210px] md:items-start"
-          )}
-        >
-          <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 text-xs uppercase tracking-wider font-semibold text-muted-foreground">
-              <ModeIcon className="h-3.5 w-3.5" />
-              {selectedMode.modeLabel}
+      <div className={cn(variant === "overlay" ? "p-5 md:p-6" : "p-4 md:p-5")}>
+        {variant === "overlay" ? (
+          <>
+            <div className="space-y-2">
+              <div className="inline-flex items-center gap-2 text-xs uppercase tracking-wider font-semibold text-muted-foreground">
+                <ModeIcon className="h-3.5 w-3.5" />
+                {selectedMode.modeLabel}
+              </div>
+              <p className="text-base leading-relaxed text-[#2d2d2d]">
+                {selectedMode.helper}
+              </p>
             </div>
-            <p className="text-sm text-foreground/85">{selectedMode.helper}</p>
-            <Input
-              aria-label={selectedMode.label}
-              placeholder={selectedMode.label}
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              autoComplete="street-address"
-              className="h-12 rounded-none border-zinc-200"
-            />
+
+            <div className="mt-4 grid gap-4 md:grid-cols-[1fr_220px] md:items-start">
+              <Input
+                aria-label={selectedMode.label}
+                placeholder={selectedMode.label}
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                autoComplete="street-address"
+                className="h-14 rounded-none border-[#d7d7d7] bg-[#f5f1eb] text-base placeholder:text-[#7c7c7c]"
+              />
+              <Button
+                className="h-14 w-full rounded-none bg-[#e31837] text-base font-bold hover:bg-[#c7122f]"
+                onClick={onStartOrder}
+              >
+                View Deals <ArrowRight className="h-4 w-4" />
+              </Button>
+            </div>
+          </>
+        ) : (
+          <div className="grid gap-4 md:grid-cols-[1fr_210px] md:items-start">
+            <div className="space-y-2">
+              <div className="inline-flex items-center gap-2 text-xs uppercase tracking-wider font-semibold text-muted-foreground">
+                <ModeIcon className="h-3.5 w-3.5" />
+                {selectedMode.modeLabel}
+              </div>
+              <p className="text-sm text-foreground/85">{selectedMode.helper}</p>
+              <Input
+                aria-label={selectedMode.label}
+                placeholder={selectedMode.label}
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                autoComplete="street-address"
+                className="h-12 rounded-none border-zinc-200"
+              />
+            </div>
+            <Button
+              className="h-12 rounded-none bg-[#e31837] text-base font-bold hover:bg-[#c7122f]"
+              onClick={onStartOrder}
+            >
+              View Deals <ArrowRight className="h-4 w-4" />
+            </Button>
           </div>
-          <Button
-            className="h-12 rounded-none bg-[#e31837] text-base font-bold hover:bg-[#c7122f]"
-            onClick={onStartOrder}
-          >
-            View Deals <ArrowRight className="h-4 w-4" />
-          </Button>
-        </div>
+        )}
 
         <button
           type="button"
-          className="mt-3 text-sm font-semibold text-[#2f6af0] hover:underline inline-flex items-center gap-2 disabled:cursor-not-allowed disabled:opacity-65"
+          className={cn(
+            "text-sm font-semibold text-[#2f6af0] hover:underline inline-flex items-center gap-2 disabled:cursor-not-allowed disabled:opacity-65",
+            variant === "overlay" ? "mt-4 border-t border-[#e4e4e4] pt-3" : "mt-3"
+          )}
           onClick={onUseCurrentLocation}
           disabled={isLocating}
         >
@@ -348,7 +376,7 @@ const StartOrder = ({
 
   if (variant === "overlay") {
     return (
-      <div className="mx-auto w-full">
+      <div className="mx-auto w-full max-w-[760px]">
         {orderCard}
         {mapDialog}
       </div>
