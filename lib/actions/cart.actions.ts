@@ -9,13 +9,15 @@ import { cartItemSchema, insertCartSchema } from "../validators";
 import { revalidatePath } from "next/cache";
 import { Prisma } from "@prisma/client";
 import { getCartPricing } from "../delivery";
+import { getActiveDeliveryZoneRules } from "./delivery-zone.actions";
 
 //Calculate cart price
-const calcPrice = (items: CartItem[], deliveryCity?: string) => {
+const calcPrice = async (items: CartItem[], deliveryCity?: string) => {
   const itemsPrice = round2(
     items.reduce((acc, item) => acc + Number(item.price) * item.qty, 0)
   );
-  const priceDetails = getCartPricing(itemsPrice, deliveryCity);
+  const deliveryZones = await getActiveDeliveryZoneRules();
+  const priceDetails = getCartPricing(itemsPrice, deliveryCity, deliveryZones);
   const shippingPrice = round2(priceDetails.shippingPrice);
   const taxPrice = round2(priceDetails.taxPrice);
   const totalPrice = round2(priceDetails.totalPrice);
@@ -73,7 +75,7 @@ export async function addItemToCart(data: CartItem) {
         userId: userId,
         items: [item],
         sessionCartId: sessionCartId,
-        ...calcPrice([item], deliveryCity),
+        ...(await calcPrice([item], deliveryCity)),
       });
 
       //Add to database
@@ -118,7 +120,7 @@ export async function addItemToCart(data: CartItem) {
         where: { id: cart.id },
         data: {
           items: cart.items as Prisma.CartUpdateitemsInput[],
-          ...calcPrice(cart.items as CartItem[], deliveryCity),
+          ...(await calcPrice(cart.items as CartItem[], deliveryCity)),
         },
       });
 
@@ -154,15 +156,36 @@ export async function getMyCart() {
   });
 
   if (!cart) return undefined;
+  const items = cart.items as CartItem[];
+  const deliveryCity = await getDeliveryCityByUserId(userId);
+  const latestPrices = await calcPrice(items, deliveryCity);
+
+  const hasPriceChanged =
+    cart.itemsPrice.toString() !== latestPrices.itemsPrice ||
+    cart.shippingPrice.toString() !== latestPrices.shippingPrice ||
+    cart.taxPrice.toString() !== latestPrices.taxPrice ||
+    cart.totalPrice.toString() !== latestPrices.totalPrice;
+
+  if (hasPriceChanged) {
+    await prisma.cart.update({
+      where: { id: cart.id },
+      data: {
+        itemsPrice: latestPrices.itemsPrice,
+        shippingPrice: latestPrices.shippingPrice,
+        taxPrice: latestPrices.taxPrice,
+        totalPrice: latestPrices.totalPrice,
+      },
+    });
+  }
 
   // Convert decimals and return
   return converToPlainObject({
     ...cart,
-    items: cart.items as CartItem[],
-    itemsPrice: cart.itemsPrice.toString(),
-    totalPrice: cart.totalPrice.toString(),
-    shippingPrice: cart.shippingPrice.toString(),
-    taxPrice: cart.taxPrice.toString(),
+    items,
+    itemsPrice: latestPrices.itemsPrice,
+    totalPrice: latestPrices.totalPrice,
+    shippingPrice: latestPrices.shippingPrice,
+    taxPrice: latestPrices.taxPrice,
   });
 }
 
@@ -209,7 +232,7 @@ export async function removeItemFromCart(productId: string) {
       where: { id: cart.id },
       data: {
         items: cart.items as Prisma.CartUpdateitemsInput[],
-        ...calcPrice(cart.items as CartItem[], deliveryCity),
+        ...(await calcPrice(cart.items as CartItem[], deliveryCity)),
       },
     });
 
@@ -236,7 +259,7 @@ export async function recalculateCartForUser(userId: string, city?: string) {
   await prisma.cart.update({
     where: { id: cart.id },
     data: {
-      ...calcPrice(items, city),
+      ...(await calcPrice(items, city)),
     },
   });
 }

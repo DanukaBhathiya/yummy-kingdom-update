@@ -39,88 +39,97 @@ const OffersBasket = ({
   const itemCount = cart?.items.reduce((total, item) => total + item.qty, 0) ?? 0;
 
   return (
-    <aside className={cn("flex min-h-screen flex-col bg-[#f2f2f2]", className)}>
-      <div className="border-b border-black/10 bg-white px-6 py-10">
-        <h2 className="text-[34px] font-black leading-none tracking-tight text-[#1a1717]">
-          {title}
-        </h2>
-      </div>
-
-      <div className="border-b border-black/10 bg-[#ececec] p-6">
-        <div className="grid grid-cols-2 gap-0 border border-[#d7d7d7] bg-[#e7e7e7]">
-          <div className="border-r border-[#d7d7d7] bg-white px-5 py-4">
-            <div className="flex items-center gap-3">
-              <Truck className="h-6 w-6 text-[#ed1c24]" />
-              <div>
-                <div className="text-[18px] font-black text-[#1a1717]">{deliveryLabel}</div>
-                <div className="text-[16px] text-[#5a5a5a]">{displayPostcode}</div>
-              </div>
-            </div>
+    <aside className={cn("h-full bg-[#f8f7f6]", className)}>
+      <div className="top-4 space-y-4 xl:sticky">
+        <div className="overflow-hidden rounded-xl border border-black/10 bg-white shadow-sm">
+          <div className="border-b border-black/10 px-5 py-5">
+            <h2 className="text-3xl font-black leading-none tracking-tight text-[#1a1717]">
+              {title}
+            </h2>
           </div>
-          <div className="px-5 py-4">
-            <div className="flex items-center gap-3">
-              <ShoppingBag className="h-6 w-6 text-[#3d3d3d]" />
-              <div>
-                <div className="text-[18px] font-black text-[#1a1717]">{collectLabel}</div>
-                <div className="text-[16px] text-[#5a5a5a]">{collectMeta}</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      <div className="flex flex-1 flex-col justify-between">
-        <div className="space-y-6 border-b border-black/10 bg-white px-6 py-8">
-          {!cart || cart.items.length === 0 ? (
-            <p className="text-[24px] font-medium leading-[1.35] text-[#6b6b6b]">{emptyMessage}</p>
-          ) : (
-            <>
-              <div className="space-y-4">
-                {cart.items.map((item) => (
-                  <div
-                    key={item.productId}
-                    className="flex items-start justify-between gap-3 border-b border-[#ececec] pb-4 last:border-b-0 last:pb-0"
-                  >
-                    <div className="min-w-0">
-                      <p className="text-[18px] font-black text-[#1a1717]">{item.name}</p>
-                      <p className="text-[16px] text-[#5a5a5a]">Qty {item.qty}</p>
-                    </div>
-                    <div className="shrink-0 text-[18px] font-black text-[#1a1717]">
-                      {formatCurreny(Number(item.price) * item.qty)}
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <div className="space-y-3 bg-[#f4f4f4] p-5">
-                <div className="flex items-center justify-between text-[18px] text-[#5a5a5a]">
-                  <span>Items</span>
-                  <span>{itemCount}</span>
-                </div>
-                <div className="flex items-center justify-between text-[20px] font-black text-[#1a1717]">
-                  <span>Subtotal</span>
-                  <span>{formatCurreny(cart.itemsPrice)}</span>
-                </div>
-              </div>
-
-              <Button
-                asChild
-                className="h-14 w-full rounded-none bg-[#ed1c24] text-[18px] font-black hover:bg-[#d3161d]"
+          <div className="border-b border-black/10 bg-[#f5f5f5] p-4">
+            <div className="grid grid-cols-[minmax(0,1fr)_120px] gap-2 rounded-lg border border-[#d9d9d9] bg-white p-1">
+              <button
+                type="button"
+                className="flex min-w-0 items-center gap-2 rounded-md bg-[#fff2f3] px-3 py-2 text-left"
               >
-                <Link href={cartHref}>{cartButtonLabel}</Link>
-              </Button>
-            </>
-          )}
+                <Truck className="h-4 w-4 text-[#ed1c24]" />
+                <div className="min-w-0">
+                  <div className="text-sm font-bold text-[#1a1717]">{deliveryLabel}</div>
+                  <div className="truncate text-xs text-[#5a5a5a]">{displayPostcode}</div>
+                </div>
+              </button>
+              <button
+                type="button"
+                className="flex items-center gap-2 rounded-md px-3 py-2 text-left"
+              >
+                <ShoppingBag className="h-4 w-4 text-[#3d3d3d]" />
+                <div>
+                  <div className="text-sm font-bold text-[#1a1717]">{collectLabel}</div>
+                  <div className="text-xs text-[#5a5a5a]">{collectMeta}</div>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <div className="space-y-4 px-5 py-5">
+            {!cart || cart.items.length === 0 ? (
+              <p className="rounded-lg bg-[#f8f8f8] p-4 text-sm leading-relaxed text-[#6b6b6b]">
+                {emptyMessage}
+              </p>
+            ) : (
+              <>
+                <div className="space-y-3">
+                  {cart.items.map((item) => (
+                    <div
+                      key={item.productId}
+                      className="flex items-start justify-between gap-3 border-b border-[#ececec] pb-3 last:border-b-0 last:pb-0"
+                    >
+                      <div className="min-w-0 space-y-0.5">
+                        <p className="text-base font-semibold leading-snug text-[#1a1717] break-words">
+                          {item.name}
+                        </p>
+                        <p className="text-sm text-[#5a5a5a]">Qty {item.qty}</p>
+                      </div>
+                      <div className="shrink-0 text-sm font-bold text-[#1a1717]">
+                        {formatCurreny(Number(item.price) * item.qty)}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="space-y-2 rounded-lg bg-[#f7f7f7] p-4">
+                  <div className="flex items-center justify-between text-sm text-[#5a5a5a]">
+                    <span>Items</span>
+                    <span>{itemCount}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-base font-bold text-[#1a1717]">
+                    <span>Subtotal</span>
+                    <span>{formatCurreny(cart.itemsPrice)}</span>
+                  </div>
+                </div>
+
+                <Button
+                  asChild
+                  className="h-11 w-full bg-[#ed1c24] text-sm font-bold hover:bg-[#d3161d]"
+                >
+                  <Link href={cartHref}>{cartButtonLabel}</Link>
+                </Button>
+              </>
+            )}
+          </div>
         </div>
 
         {showVoucherField && (
-          <div className="bg-[#ececec] p-6">
-            <div className="flex overflow-hidden border border-[#d7d7d7] bg-white">
+          <div className="rounded-xl border border-black/10 bg-white p-4 shadow-sm">
+            <label className="mb-2 block text-sm font-semibold text-[#1a1717]">Voucher Code</label>
+            <div className="flex overflow-hidden rounded-lg border border-[#d7d7d7] bg-white">
               <Input
                 placeholder={voucherPlaceholder}
-                className="h-[72px] rounded-none border-0 px-5 text-[18px] focus-visible:ring-0"
+                className="h-11 rounded-none border-0 px-3 text-sm focus-visible:ring-0"
               />
-              <Button className="h-[72px] rounded-none bg-[#ed1c24] px-8 text-[18px] font-black hover:bg-[#d3161d]">
+              <Button className="h-11 rounded-none bg-[#ed1c24] px-5 text-sm font-bold hover:bg-[#d3161d]">
                 {addVoucherLabel}
               </Button>
             </div>

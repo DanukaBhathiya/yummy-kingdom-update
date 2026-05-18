@@ -29,18 +29,19 @@ import {
   deliverOrder,
 } from "@/lib/actions/order.actions";
 import StripePayment from "./stripe-payment";
-import { getDeliveryZoneDetails } from "@/lib/delivery";
 
 const OrderDetailsTable = ({
   order,
   paypalClientId,
   isAdmin,
   stripeClientSecret,
+  deliveryInfo,
 }: {
   order: Order;
   paypalClientId: string;
   isAdmin: boolean;
   stripeClientSecret: string | null;
+  deliveryInfo: { zone: string; fee: number; eta: string };
 }) => {
   const {
     id,
@@ -63,7 +64,6 @@ const OrderDetailsTable = ({
       ? "Visa / Mastercard"
       : paymentMethod;
   const isCardPaymentMethod = paymentMethod === "Stripe";
-  const deliveryInfo = getDeliveryZoneDetails(shippingAddress.city);
 
   const { toast } = useToast();
 

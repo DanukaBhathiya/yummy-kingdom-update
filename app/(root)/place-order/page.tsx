@@ -19,7 +19,7 @@ import {
 import Image from "next/image";
 import { formatCurreny } from "@/lib/utils";
 import PlaceOrderForm from "./place-order-form";
-import { getDeliveryZoneDetails } from "@/lib/delivery";
+import { getDeliveryZoneDetailsByCity } from "@/lib/actions/delivery-zone.actions";
 
 export const metadata: Metadata = {
   title: "Place Order",
@@ -39,7 +39,7 @@ const PlaceOrderPage = async () => {
   if (!user.paymentMethod) redirect("/payment-method");
 
   const userAddress = user.address as ShippingAddress;
-  const deliveryInfo = getDeliveryZoneDetails(userAddress.city);
+  const deliveryInfo = await getDeliveryZoneDetailsByCity(userAddress.city);
   const paymentMethodLabel =
     user.paymentMethod === "CashOnDelivery"
       ? "Cash On Delivery"

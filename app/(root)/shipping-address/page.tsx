@@ -6,6 +6,7 @@ import { ShippingAddress } from "@/types";
 import { getUserById } from "@/lib/actions/user.actions";
 import ShippingAddressForm from "./shipping-address-form";
 import CheckoutSteps from "@/components/shared/checkout-steps";
+import { getDeliveryGuideForCheckout } from "@/lib/actions/delivery-zone.actions";
 
 export const metadata: Metadata = {
   title: "Shipping Address",
@@ -23,11 +24,16 @@ const ShippingAddressPage = async () => {
   if (!userId) throw new Error("No user ID");
 
   const user = await getUserById(userId);
+  const deliveryGuide = await getDeliveryGuideForCheckout();
 
   return (
     <>
     <CheckoutSteps current={1}/>
-      <ShippingAddressForm address={user.address as ShippingAddress} />
+      <ShippingAddressForm
+        address={user.address as ShippingAddress}
+        deliveryZones={deliveryGuide.zones}
+        defaultDeliveryFee={deliveryGuide.defaultFee}
+      />
     </>
   );
 };

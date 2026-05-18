@@ -5,6 +5,7 @@ import OrderDetailsTable from "./order-details-table";
 import { ShippingAddress } from "@/types";
 import { auth } from "@/auth";
 import Stripe from "stripe";
+import { getDeliveryZoneDetailsByCity } from "@/lib/actions/delivery-zone.actions";
 
 export const metadata: Metadata = {
   title: "Order Details",
@@ -19,6 +20,8 @@ const OrderDetailsPage = async (props: {
 
   const order = await getOrderById(id);
   if (!order) notFound();
+  const shippingAddress = order.shippingAddress as ShippingAddress;
+  const deliveryInfo = await getDeliveryZoneDetailsByCity(shippingAddress.city);
 
   const session = await auth();
 
@@ -48,11 +51,12 @@ const OrderDetailsPage = async (props: {
     <OrderDetailsTable
       order={{
         ...order,
-        shippingAddress: order.shippingAddress as ShippingAddress,
+        shippingAddress,
       }}
       stripeClientSecret={client_secret}
       paypalClientId={process.env.PAYPAL_CLIENT_ID || "sb"} //sb is a identifier for sandbox account
       isAdmin={session?.user.role === "admin" || false}
+      deliveryInfo={deliveryInfo}
     />
   );
 };
