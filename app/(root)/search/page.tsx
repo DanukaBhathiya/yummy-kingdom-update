@@ -1,9 +1,8 @@
 import ProductCard from "@/components/shared/product/product-card";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  getAllProducts,
-  getAllCategories,
-} from "@/lib/actions/product.actions";
+import { cn } from "@/lib/utils";
+import { getAllCategories, getAllProducts } from "@/lib/actions/product.actions";
 import Link from "next/link";
 import {
   CakeSlice,
@@ -11,6 +10,7 @@ import {
   Pizza,
   Sandwich,
   ShoppingBag,
+  SlidersHorizontal,
   Tag,
   Truck,
   UtensilsCrossed,
@@ -19,28 +19,27 @@ import {
 const prices = [
   {
     name: "Rs. 500 to Rs. 1,500",
-    Value: "500-1500",
+    value: "500-1500",
   },
   {
     name: "Rs. 1,501 to Rs. 2,500",
-    Value: "1501-2500",
+    value: "1501-2500",
   },
   {
     name: "Rs. 2,501 to Rs. 3,500",
-    Value: "2501-3500",
+    value: "2501-3500",
   },
   {
     name: "Rs. 3,501 to Rs. 4,500",
-    Value: "3501-4500",
+    value: "3501-4500",
   },
   {
     name: "Rs. 4,501 to Rs. 6,500",
-    Value: "4501-6500",
+    value: "4501-6500",
   },
 ];
 
 const ratings = [4, 3, 2, 1];
-
 const sortOrders = ["newest", "lowest", "highest", "rating"];
 
 const orderModeUi = {
@@ -94,16 +93,10 @@ export async function generateMetadata(props: {
     rating: string;
   }>;
 }) {
-  const {
-    q = "all",
-    category = "all",
-    price = "all",
-    rating = "all",
-  } = await props.searchParams;
+  const { q = "all", category = "all", price = "all", rating = "all" } = await props.searchParams;
 
   const isQuerySet = q && q !== "all" && q.trim() !== "";
-  const isCategorySet =
-    category && category !== "all" && category.trim() !== "";
+  const isCategorySet = category && category !== "all" && category.trim() !== "";
   const isPriceSet = price && price !== "all" && price.trim() !== "";
   const isRatingSet = rating && rating !== "all" && rating.trim() !== "";
 
@@ -115,12 +108,11 @@ export async function generateMetadata(props: {
       ${isPriceSet ? `: Price ${price}` : ""}
       ${isRatingSet ? `: Rating ${rating}` : ""}`,
     };
-
-  } else {
-    return {
-      title: "Search",
-    };
   }
+
+  return {
+    title: "Search",
+  };
 }
 
 const SearchPage = async (props: {
@@ -151,7 +143,6 @@ const SearchPage = async (props: {
     : "deliver";
   const modeMeta = orderModeUi[safeMode];
 
-  //Construct filter URL
   const getFilterUrl = ({
     c,
     s,
@@ -193,161 +184,182 @@ const SearchPage = async (props: {
 
   const categories = await getAllCategories();
 
+  const hasActiveFilters =
+    (q !== "all" && q !== "") ||
+    (category !== "all" && category !== "") ||
+    price !== "all" ||
+    rating !== "all";
+
+  const activeFilters = [
+    q !== "all" && q !== "" ? `Search: ${q}` : null,
+    category !== "all" && category !== "" ? `Category: ${category}` : null,
+    price !== "all" ? `Price: ${price}` : null,
+    rating !== "all" ? `Rating: ${rating}+` : null,
+  ].filter(Boolean) as string[];
+
+  const filterLinkClass = (active: boolean) =>
+    cn(
+      "block rounded-lg px-3 py-2 text-sm transition-colors",
+      active ? "bg-[#ed1c24] font-semibold text-white shadow-sm" : "text-[#23201f] hover:bg-[#fff2f3]"
+    );
+
   return (
-    <div className="space-y-5">
-      <section className="rounded-2xl border bg-white/90 p-4 md:p-5">
-        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+    <div className="space-y-6">
+      <section className="rounded-3xl border border-black/10 bg-white/90 p-5 shadow-sm md:p-6">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div>
-            <div className="inline-flex items-center gap-2 text-sm text-muted-foreground">
+            <div className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground">
               <modeMeta.icon className="h-4 w-4" />
               {modeMeta.label} Mode
             </div>
-            <h1 className="mt-1 text-2xl md:text-3xl font-black tracking-tight">
-              Order Now
-            </h1>
-            <p className="mt-1 text-sm text-muted-foreground">
+            <h1 className="mt-2 text-4xl font-black leading-none tracking-tight text-[#1a1717]">Order Now</h1>
+            <p className="mt-2 text-sm text-muted-foreground">
               {loc ? `Location: ${loc}` : "Set your location from the home page for local deals."}
             </p>
           </div>
-          <Button asChild>
+
+          <Button asChild className="h-11 rounded-xl bg-[#ed1c24] px-5 text-sm font-bold hover:bg-[#d3161d]">
             <Link href="/">Change Mode or Location</Link>
           </Button>
         </div>
-        <div className="mt-4 flex flex-wrap gap-2">
+
+        <div className="mt-5 flex flex-wrap gap-2">
           {quickOrderTabs.map((tab) => (
-            <Button key={tab.label} asChild variant="outline" size="sm" className="rounded-full">
-              <Link href={`${tab.href}${tab.href.includes("?") ? "&" : "?"}mode=${safeMode}${loc ? `&loc=${encodeURIComponent(loc)}` : ""}`}>
-                {tab.icon ? (
-                  <span className="inline-flex items-center gap-1.5">
-                    <tab.icon className="h-4 w-4" />
-                    {tab.label}
-                  </span>
-                ) : (
-                  tab.label
-                )}
-              </Link>
-            </Button>
+            <Link
+              key={tab.label}
+              href={`${tab.href}${tab.href.includes("?") ? "&" : "?"}mode=${safeMode}${loc ? `&loc=${encodeURIComponent(loc)}` : ""}`}
+              className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-medium text-[#1a1717] transition-colors hover:border-[#ed1c24] hover:text-[#ed1c24]"
+            >
+              <tab.icon className="h-4 w-4" />
+              {tab.label}
+            </Link>
           ))}
         </div>
       </section>
 
-      <div className="grid md:grid-cols-5 md:gap-5">
-      <div className="filter-links">
-        {/*Category Links */}
-        <div className="text-xl mb-2 mt-3">Pizza Category</div>
-        <div>
-          <ul className="space-y-1">
-            <li>
-              <Link
-                className={`${
-                  (category === "all" || category === "") && "font-bold"
-                }`}
-                href={getFilterUrl({ c: "all" })}
-              >
-                Any
-              </Link>
-            </li>
-            {categories.map((x) => (
-              <li key={x.category}>
-                <Link
-                  className={`${category === x.category && "font-bold"}`}
-                  href={getFilterUrl({ c: x.category })}
-                >
-                  {x.category}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
+      <div className="grid items-start gap-6 lg:grid-cols-[280px_minmax(0,1fr)]">
+        <aside className="space-y-4 lg:sticky lg:top-24">
+          <div className="rounded-2xl border border-black/10 bg-white p-4 shadow-sm">
+            <div className="mb-3 inline-flex items-center gap-2 text-sm font-semibold text-[#1a1717]">
+              <SlidersHorizontal className="h-4 w-4" /> Filters
+            </div>
 
-        {/*Price Links */}
-        <div className="text-xl mb-2 mt-4">Price</div>
-        <div>
-          <ul className="space-y-1">
-            <li>
-              <Link
-                className={`${price === "all" && "font-bold"}`}
-                href={getFilterUrl({ p: "all" })}
-              >
-                Any
-              </Link>
-            </li>
-            {prices.map((p) => (
-              <li key={p.Value}>
-                <Link
-                  className={`${price === p.Value && "font-bold"}`}
-                  href={getFilterUrl({ p: p.Value })}
-                >
-                  {p.name}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
+            <div className="space-y-4">
+              <div>
+                <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Pizza Category</h3>
+                <ul className="space-y-1">
+                  <li>
+                    <Link className={filterLinkClass(category === "all" || category === "")} href={getFilterUrl({ c: "all" })}>
+                      Any
+                    </Link>
+                  </li>
+                  {categories.map((item) => (
+                    <li key={item.category}>
+                      <Link
+                        className={filterLinkClass(category === item.category)}
+                        href={getFilterUrl({ c: item.category })}
+                      >
+                        {item.category}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
 
-        {/*Rating Links */}
-        <div className="text-xl mb-2 mt-3">Customer Ratings</div>
-        <div>
-          <ul className="space-y-1">
-            <li>
-              <Link
-                className={`${rating === "all" && "font-bold"}`}
-                href={getFilterUrl({ r: "all" })}
-              >
-                Any
-              </Link>
-            </li>
-            {ratings.map((r) => (
-              <li key={r}>
-                <Link
-                  className={`${rating === r.toString() && "font-bold"}`}
-                  href={getFilterUrl({ r: `${r}` })}
-                >
-                  {`${r} stars & up`}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-      <div className="md:col-span-4 space-y-4">
-        <div className="flex-between flext-col md:flex-row my-4">
-          <div className="flex items-center">
-            {q !== "all" && q !== "" && "Query: " + q}
-            {category !== "all" && category !== "" && "Category: " + category}
-            {price !== "all" && " Price: " + price}
-            {rating !== "all" && " Rating: " + rating + " & up"}
-            &nbsp;
-            {(q !== "all" && q !== "") ||
-            (category !== "all" && category !== "") ||
-            rating !== "all" ||
-            price !== "all" ? (
-              <Button variant={"link"} asChild>
-                <Link href="/search">Clear</Link>
-              </Button>
-            ) : null}
+              <div>
+                <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Price</h3>
+                <ul className="space-y-1">
+                  <li>
+                    <Link className={filterLinkClass(price === "all")} href={getFilterUrl({ p: "all" })}>
+                      Any
+                    </Link>
+                  </li>
+                  {prices.map((item) => (
+                    <li key={item.value}>
+                      <Link className={filterLinkClass(price === item.value)} href={getFilterUrl({ p: item.value })}>
+                        {item.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Customer Ratings</h3>
+                <ul className="space-y-1">
+                  <li>
+                    <Link className={filterLinkClass(rating === "all")} href={getFilterUrl({ r: "all" })}>
+                      Any
+                    </Link>
+                  </li>
+                  {ratings.map((item) => (
+                    <li key={item}>
+                      <Link className={filterLinkClass(rating === item.toString())} href={getFilterUrl({ r: `${item}` })}>
+                        {item} stars & up
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
           </div>
-          <div>
-            {/* Sort */}
-            Sort by{" "}
-            {sortOrders.map((s) => (
-              <Link
-                key={s}
-                className={`mx-2 ${sort == s && "font-bold"}`}
-                href={getFilterUrl({ s })}
-              >
-                {s}
-              </Link>
-            ))}
+        </aside>
+
+        <section className="space-y-4">
+          <div className="rounded-2xl border border-black/10 bg-white p-4 shadow-sm">
+            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+              <div className="flex flex-wrap items-center gap-2">
+                {hasActiveFilters ? (
+                  activeFilters.map((item) => (
+                    <Badge key={item} variant="outline" className="rounded-full border-[#f5c6c8] bg-[#fff6f7] px-3 py-1 text-[#8c1d22]">
+                      {item}
+                    </Badge>
+                  ))
+                ) : (
+                  <span className="text-sm text-muted-foreground">No filters selected</span>
+                )}
+                {hasActiveFilters && (
+                  <Button asChild variant="link" className="h-auto px-1 text-[#ed1c24]">
+                    <Link href="/search">Clear all</Link>
+                  </Button>
+                )}
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium text-muted-foreground">Sort by</span>
+                <div className="flex flex-wrap gap-2">
+                  {sortOrders.map((item) => (
+                    <Link
+                      key={item}
+                      href={getFilterUrl({ s: item })}
+                      className={cn(
+                        "rounded-full border px-3 py-1.5 text-sm capitalize transition-colors",
+                        sort === item
+                          ? "border-[#ed1c24] bg-[#ed1c24] text-white"
+                          : "border-black/10 bg-white text-[#1a1717] hover:border-[#ed1c24] hover:text-[#ed1c24]"
+                      )}
+                    >
+                      {item}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-          {products.data.length == 0 && <div>No products found</div>}
-          {products.data.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
-      </div>
+
+          {products.data.length === 0 ? (
+            <div className="rounded-2xl border border-black/10 bg-white p-8 text-center shadow-sm">
+              <p className="text-lg font-semibold text-[#1a1717]">No products found</p>
+              <p className="mt-1 text-sm text-muted-foreground">Try changing your category, price range, or rating filter.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+              {products.data.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          )}
+        </section>
       </div>
     </div>
   );
