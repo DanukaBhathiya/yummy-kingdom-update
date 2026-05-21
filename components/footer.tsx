@@ -39,7 +39,7 @@ const Footer = () => {
   const whatsappLink = `https://wa.me/94${SHOP_WHATSAPP.replace(/\s+/g, "").slice(1)}`;
 
   return (
-    <footer className="mt-10 border-t border-white/10 bg-black text-white">
+    <footer className="mt-1 border-t border-white/10 bg-black text-white">
       <div className="wrapper py-10">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {footerSections.map((section) => (

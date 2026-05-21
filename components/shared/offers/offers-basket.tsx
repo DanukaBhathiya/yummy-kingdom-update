@@ -39,8 +39,8 @@ const OffersBasket = ({
   const itemCount = cart?.items.reduce((total, item) => total + item.qty, 0) ?? 0;
 
   return (
-    <aside className={cn("h-full bg-[#f8f7f6]", className)}>
-      <div className="top-4 space-y-4 xl:sticky">
+    <aside className={cn("self-start bg-[#f8f7f6] xl:sticky xl:top-4", className)}>
+      <div className="space-y-4">
         <div className="overflow-hidden rounded-xl border border-black/10 bg-white shadow-sm">
           <div className="border-b border-black/10 px-5 py-5">
             <h2 className="text-3xl font-black leading-none tracking-tight text-[#1a1717]">
