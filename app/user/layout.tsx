@@ -3,37 +3,38 @@ import Image from "next/image";
 import Link from "next/link";
 import Menu from "@/components/shared/header/menu";
 import MainNav from "./main-nav";
-import { Input } from "@/components/ui/input";
 
-export default function AdminLayout({
+export default function UserLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <>
-      <div className="flex flex-col">
-        <div className="border-b container mx-auto">
-          <div className="flex items-center h-16 px-4">
-            <Link href="/" className="w-22">
-              <Image
-                src={APP_LOGO}
-                height={42}
-                width={82}
-                alt={APP_NAME}
-              />
-            </Link>
-            
-            <MainNav className="mx-6" />
-            <div className="ml-auto items-center flex space-x-4">
-              <Menu />
-            </div>
+    <div className="flex min-h-screen flex-col">
+      <header className="sticky top-0 z-50 w-full border-b bg-background/85 backdrop-blur-xl supports-[backdrop-filter]:bg-background/70">
+        <div className="wrapper flex flex-wrap items-center gap-3 py-2 md:gap-4">
+          <Link href="/" className="flex-start shrink-0 gap-4" aria-label={APP_NAME}>
+            <Image
+              src={APP_LOGO}
+              height={56}
+              width={140}
+              alt={APP_NAME}
+              className="h-20 w-auto animate-float-slow rounded-lg"
+              priority
+            />
+          </Link>
+
+          <MainNav className="order-3 w-full md:order-none md:w-auto" />
+
+          <div className="ml-auto">
+            <Menu />
           </div>
         </div>
-        <div className="flex-1 space-y-4 p-8 pt-6 container mx-auto">
-          {children}
-        </div>
-      </div>
-    </>
+      </header>
+
+      <main className="wrapper flex-1 animate-rise">
+        <div className="py-4 md:py-6">{children}</div>
+      </main>
+    </div>
   );
 }
